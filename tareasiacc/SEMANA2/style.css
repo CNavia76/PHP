@@ -1,0 +1,22 @@
+
+h1  {
+background-color: aqua;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+h2
+{
+    font-size: 1.5em;
+    color: hwb(0 3% 9%);
+    margin-top: 10px;
+}
+div {
+    background-color: hwb(199 44% 15%);
+    padding: 20px;
+    border-radius: 5px;
+    margin: 10px;
+}

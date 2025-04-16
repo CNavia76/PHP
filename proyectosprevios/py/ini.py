@@ -1,0 +1,4 @@
+
+type("Hola mundo")
+
+
