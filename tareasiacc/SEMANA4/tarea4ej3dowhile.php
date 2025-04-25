@@ -1,13 +1,12 @@
 <?php
 
-
 $comentario = null; // Inicializar la variable antes del bucle
 
 do {
     $comentario = obtenerSiguienteComentarioPendiente(); // Función que obtiene el siguiente comentario pendiente
 
     if ($comentario) {
-        revisarComentario(comentario: $comentario); // Aplicar reglas de moderación
+        revisarComentario($comentario); // Aplicar reglas de moderación
     }
 
 } while ($comentario !== null);
@@ -22,7 +21,7 @@ function obtenerSiguienteComentarioPendiente(): string|null {
     return $comentarioActual;
 }
 
-function revisarComentario($comentario): void {
+function revisarComentario(string $comentario): void {
     echo "Revisando: $comentario<br>";
 }
 
