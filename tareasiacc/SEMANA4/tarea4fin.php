@@ -4,9 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moderación de Comentarios</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        form {
+            margin: 20px 0;
+        }
+        textarea {
+            width: 100%;
+            max-width: 400px;
+        }
+        button {
+            margin: 5px;
+        }
+        h1, h2, p {
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Moderación de Palabras</h1>
+   <h1>BIENVENIDO al sistema de <br> Moderación de comentarios</h1>
+    <h2>Carolina Navia C.</h2>
+    <p>Ingrese un comentario y el sistema lo moderará automáticamente.</p>
     <form method="post">
         <label for="comentario">Ingrese un comentario:</label><br>
         <textarea id="comentario" name="comentario" rows="4" cols="50" placeholder="Escriba su comentario aquí..."></textarea><br><br>
@@ -16,7 +43,7 @@
     <hr>
 
     <?php
-    // Palabras prohibidas
+    // Palabras prohibidas en los comentarios, se pueden agregar más palabras...    
     $palabras = ["guerra", "muerte", "odio", "violencia", "discriminación"];
 
     // Verificar si se envió el formulario
@@ -42,7 +69,8 @@
                 echo "<p>No se detectaron palabras prohibidas en el comentario.</p>";
             }
 
-            // Mostrar botones para modificar o eliminar
+            // Mostrar botones para modificar o eliminar comentarios...
+            echo "<h3>¿Qué desea hacer con el comentario?</h3>";
             echo '<form method="post">';
             echo '<input type="hidden" name="comentario" value="' . htmlspecialchars($comentario) . '">';
             echo '<button type="submit" name="accion" value="modificar">Modificar</button>';
@@ -61,5 +89,7 @@
         }
     }
     ?>
-</body>
+
+
+</html></body></body>
 </html>
