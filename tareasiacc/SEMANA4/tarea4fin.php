@@ -43,7 +43,7 @@
     <hr>
 
     <?php
-    // Palabras prohibidas en los comentarios, se pueden agregar más palabras...    
+     // Palabras prohibidas en los comentarios, se pueden agregar más palabras...    
     $palabras = ["guerra", "muerte", "odio", "violencia", "discriminación"];
 
     // Verificar si se envió el formulario
@@ -64,11 +64,9 @@
                     $palabraDetectada = true;
                 }
             }
-
             if (!$palabraDetectada) {
                 echo "<p>No se detectaron palabras prohibidas en el comentario.</p>";
             }
-
             // Mostrar botones para modificar o eliminar comentarios...
             echo "<h3>¿Qué desea hacer con el comentario?</h3>";
             echo '<form method="post">';
@@ -89,5 +87,8 @@
         }
     }
     ?>
+
+
+
 </body>
 </html>
