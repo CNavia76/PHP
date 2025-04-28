@@ -44,6 +44,7 @@
 
     <?php
     // Palabras prohibidas en los comentarios, se pueden agregar más palabras...    
+    // Palabras prohibidas en los comentarios, se pueden agregar más palabras...    
     $palabras = ["guerra", "muerte", "odio", "violencia", "discriminación"];
 
     // Verificar si se envió el formulario
@@ -71,6 +72,8 @@
 
             // Mostrar botones para modificar o eliminar comentarios...
             echo "<h3>¿Qué desea hacer con el comentario?</h3>";
+            // Mostrar botones para modificar o eliminar comentarios...
+            echo "<h3>¿Qué desea hacer con el comentario?</h3>";
             echo '<form method="post">';
             echo '<input type="hidden" name="comentario" value="' . htmlspecialchars($comentario) . '">';
             echo '<button type="submit" name="accion" value="modificar">Modificar</button>';
@@ -89,5 +92,7 @@
         }
     }
     ?>
-</body>
+
+
+</html></body></body>
 </html>
