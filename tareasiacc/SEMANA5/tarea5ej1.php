@@ -3,13 +3,8 @@
 $comensalesPorDia = [];
 $comensalesPorArea = [];
 
-// Ejemplo de datos de reservaciones
-$reservaciones = [
-    ["fecha" => "2025-04-25", "area" => "Terraza", "comensales" => 10],
-    ["fecha" => "2025-04-25", "area" => "Salón", "comensales" => 15],
-    ["fecha" => "2025-04-26", "area" => "Terraza", "comensales" => 8],
-    ["fecha" => "2025-04-26", "area" => "Salón", "comensales" => 12],
-];
+// Inicializar el arreglo de reservaciones vacío
+$reservaciones = [];
 
 // Procesar nueva reserva si se envía el formulario
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -22,26 +17,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $reservaciones[] = ["fecha" => $fecha, "area" => $area, "comensales" => $comensales, "nombre" => $nombre];
 }
 
-// Calcular acumulados
-foreach ($reservaciones as $reserva) {
-    $fecha = $reserva["fecha"];
-    $area = $reserva["area"];
-    $cantidad = $reserva["comensales"];
+// Calcular acumulados solo si hay reservaciones
+if (!empty($reservaciones)) {
+    foreach ($reservaciones as $reserva) {
+        $fecha = $reserva["fecha"];
+        $area = $reserva["area"];
+        $cantidad = $reserva["comensales"];
 
-    // Acumular comensales por día
-    if (!isset($comensalesPorDia[$fecha])) {
-        $comensalesPorDia[$fecha] = 0;
-    }
-    $comensalesPorDia[$fecha] += $cantidad;
+        // Acumular comensales por día
+        if (!isset($comensalesPorDia[$fecha])) {
+            $comensalesPorDia[$fecha] = 0;
+        }
+        $comensalesPorDia[$fecha] += $cantidad;
 
-    // Acumular comensales por área y fecha
-    if (!isset($comensalesPorArea[$fecha])) {
-        $comensalesPorArea[$fecha] = [];
+        // Acumular comensales por área y fecha
+        if (!isset($comensalesPorArea[$fecha])) {
+            $comensalesPorArea[$fecha] = [];
+        }
+        if (!isset($comensalesPorArea[$fecha][$area])) {
+            $comensalesPorArea[$fecha][$area] = 0;
+        }
+        $comensalesPorArea[$fecha][$area] += $cantidad;
     }
-    if (!isset($comensalesPorArea[$fecha][$area])) {
-        $comensalesPorArea[$fecha][$area] = 0;
-    }
-    $comensalesPorArea[$fecha][$area] += $cantidad;
 }
 ?>
 
