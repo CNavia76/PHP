@@ -2,9 +2,13 @@
 // Inicializar arreglos para acumulados
 $comensalesPorDia = [];
 $comensalesPorArea = [];
+$ingresosPorDia = []; // Nuevo arreglo para almacenar los ingresos por día
 
 // Inicializar el arreglo de reservaciones vacío
 $reservaciones = [];
+
+// Precio fijo por comensal
+$precioPorComensal = 20;
 
 // Procesar nueva reserva si se envía el formulario
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -17,7 +21,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $reservaciones[] = ["fecha" => $fecha, "area" => $area, "comensales" => $comensales, "nombre" => $nombre];
 }
 
+// Ordenar las reservaciones por fecha
+usort($reservaciones, function ($a, $b) {
+    return strcmp($a["fecha"], $b["fecha"]);
+});
+
 // Calcular acumulados solo si hay reservaciones
+$totalComensales = 0;
+$totalIngresos = 0;
+
 if (!empty($reservaciones)) {
     foreach ($reservaciones as $reserva) {
         $fecha = $reserva["fecha"];
@@ -38,6 +50,12 @@ if (!empty($reservaciones)) {
             $comensalesPorArea[$fecha][$area] = 0;
         }
         $comensalesPorArea[$fecha][$area] += $cantidad;
+
+        // Calcular ingresos por día
+        if (!isset($ingresosPorDia[$fecha])) {
+            $ingresosPorDia[$fecha] = 0;
+        }
+        $ingresosPorDia[$fecha] += $cantidad * $precioPorComensal;
     }
 }
 ?>
@@ -47,85 +65,72 @@ if (!empty($reservaciones)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESTAURANT </title>
+    <title>Reporte de Comensales</title>
     <style>
-    table {
-        width: 50%; /* Cambiar el ancho de la tabla al 50% */
-        margin-left: 0; /* Alinear la tabla a la izquierda */
-        border-collapse: collapse;
-        background-color: rgba(255, 255, 255, 0.5); /* Fondo blanco con 50% de transparencia */
-    }
-    th, td {
-        border: 3px solid black; /* Bordes negros */
-        padding: 4px; /* Reducir el relleno para hacerlo más compacto */
-        text-align: left;
-        font-size: 120%; /* Aumentar el tamaño de la letra en un 20% */
-        font-weight: bold; /* Hacer el texto en negrita */
-    }
-    th {
-        background-color: hsl(0, 91.30%, 77.50%); /* Cambiar el color de fondo del encabezado */
-        text-align: center; /* Centrar el texto de los encabezados */
-    }
-    tbody tr:nth-child(odd) {
-        background-color: rgba(247, 189, 189, 0.7); /* Color de fondo para filas impares con 50% de transparencia */
-    }
-    tbody tr:nth-child(even) {
-        background-color: rgba(247, 189, 189, 0.7); /* Color de fondo para filas pares con 50% de transparencia */
-    }
-    header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    header img {
-        max-width: 150px;
-        border: 2px solid black;
-    }
-    body {
-        background-image: url('fondo.png');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-    form label, form button {
-        font-weight: bold; /* Hacer el texto del formulario en negrita */
-    }
+        body {
+            background-image: url('fondo.png'); /* Ruta de la imagen */
+            background-size: cover; /* Ajustar la imagen para cubrir toda la página */
+            background-repeat: no-repeat; /* Evitar que la imagen se repita */
+            background-attachment: fixed; /* Fijar la imagen al fondo */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header img {
+            max-width: 100px;
+            border: 2px solid black;
+        }
     </style>
 </head>
 <body>
     <!-- Encabezado con imagen -->
     <header>
         <img src="logo.png" alt="Logo del Restaurante">
-        <h1>REPORTE DE RESERVAS</h1>
+        <h1>Reporte de Comensales</h1>
     </header>
 
     <!-- Formulario para agregar reservas -->
-    <h2><strong>AGREGAR NUEVA RESERVA</strong></h2>
+    <h2>Agregar Nueva Reserva</h2>
     <form method="POST">
-        <label for="fecha">FECHA:</label>
+        <label for="fecha">Fecha:</label>
         <input type="date" id="fecha" name="fecha" required><br><br>
 
-        <label for="area">ÁREA:</label>
+        <label for="area">Área:</label>
         <select id="area" name="area" required>
-            <option value="Terraza">TERRAZA</option>
-            <option value="Salón">SALÓN</option>
+            <option value="Terraza">Terraza</option>
+            <option value="Salón">Salón</option>
         </select><br><br>
 
-        <label for="comensales">NÚMERO DE COMENSALES:</label>
+        <label for="comensales">Número de Comensales:</label>
         <input type="number" id="comensales" name="comensales" min="1" required><br><br>
 
-        <label for="nombre">NOMBRE DEL CLIENTE:</label>
+        <label for="nombre">Nombre del Cliente:</label>
         <input type="text" id="nombre" name="nombre" required><br><br>
 
-        <button type="submit">AGREGAR RESERVA</button>
+        <button type="submit">Agregar Reserva</button>
     </form>
 
     <!-- Tabla de reporte -->
     <table>
         <thead>
             <tr>
-                <th>FECHA</th>
-                <th>AREA</th>
-                <th>COMENSALES</th>
+                <th>Fecha</th>
+                <th>Área</th>
+                <th>Comensales</th>
             </tr>
         </thead>
         <tbody>
