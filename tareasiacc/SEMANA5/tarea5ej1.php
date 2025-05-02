@@ -108,26 +108,29 @@ foreach ($reservaciones as $reserva) {
     <!-- Formulario para agregar reservas -->
     <h2>AGREGAR NUEVA RESERVA</h2>
     <form method="POST">
-        <label for="fecha">Fecha:</label>
+        <label for="fecha"><strong>FECHA:</strong></label>
         <input type="date" id="fecha" name="fecha" required><br><br>
 
-        <label for="area">Área:</label>
+        <label for="area"><strong>ÁREA:</strong></label>
         <select id="area" name="area" required>
             <option value="Terraza">Terraza</option>
             <option value="Salón">Salón VIP</option>
             <option value="Comedor">Comedor Principal</option>
         </select><br><br>
 
-        <label for="comensales">Número de Comensales:</label>
+        <label for="comensales"><strong>NÚMERO DED COMENSALES:</strong></label>
         <input type="number" id="comensales" name="comensales" min="1" required><br><br>
 
-        <label for="nombre">Nombre del Cliente:</label>
+        <label for="nombre"><strong>NOMBRE DEL CLIENTE:</strong></label>
         <input type="text" id="nombre" name="nombre" required><br><br>
 
-        <label for="telefono">Teléfono del Cliente:</label>
+        <label for="telefono"><strong>TELÉFONO DEL CLIENTE:</strong></label>
         <input type="text" id="telefono" name="telefono" required><br><br>
 
-        <button type="submit">Agregar Reserva</button>
+        <label for="hora"><strong>HORA RESERVA:</strong></label>
+        <input type="time" id="hora" name="hora" required><br><br>
+
+        <button type="submit"><strong>Agregar Reserva</strong></button>
     </form>
 
     <!-- Tabla de reporte -->
