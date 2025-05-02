@@ -1,5 +1,5 @@
 <?php
-// Array bidimensional asociativo con reservaciones que incluyen el área
+// Array bidimensional asociativo con reservaciones que incluyen el área elegida por el cliente.
 $reservaciones = [
     [
         'nombre' => 'Juan Perez',
