@@ -1,71 +1,71 @@
 <?php
-// Inicializar arreglos para acumulados
+// Array bidimensional asociativo con reservaciones que incluyen el área
+$reservaciones = [
+    [
+        'nombre' => 'Juan Perez',
+        'telefono' => '1234567890',
+        'comensales' => 4,
+        'fecha_hora' => '2025-05-01 20:00',
+        'area' => 'Comedor Principal'
+    ],
+    [
+        'nombre' => 'Maria Lopez',
+        'telefono' => '0987654321',
+        'comensales' => 2,
+        'fecha_hora' => '2025-05-01 21:00',
+        'area' => 'Terraza'
+    ],
+    [
+        'nombre' => 'Carlos Ruiz',
+        'telefono' => '1112223333',
+        'comensales' => 3,
+        'fecha_hora' => '2025-05-02 19:30',
+        'area' => 'Salón VIP'
+    ],
+    [
+        'nombre' => 'Ana Gomez',
+        'telefono' => '4445556666',
+        'comensales' => 5,
+        'fecha_hora' => '2025-05-03 18:00',
+        'area' => 'Comedor Principal'
+    ],
+    [
+        'nombre' => 'Luis Martinez',
+        'telefono' => '7778889999',
+        'comensales' => 2,
+        'fecha_hora' => '2025-05-03 20:00',
+        'area' => 'Terraza'
+    ]
+];
+
+// Agrupar reservaciones por fecha y área
 $comensalesPorDia = [];
 $comensalesPorArea = [];
-$ingresosPorDia = []; // Nuevo arreglo para almacenar los ingresos por día
 
-// Inicializar el arreglo de reservaciones vacío
-$reservaciones = [];
+foreach ($reservaciones as $reserva) {
+    $fecha = date('Y-m-d', strtotime($reserva['fecha_hora']));
+    $area = $reserva['area'];
 
-// Precio fijo por comensal
-$precioPorComensal = 20;
-
-// Procesar nueva reserva si se envía el formulario
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $fecha = $_POST["fecha"];
-    $area = $_POST["area"];
-    $comensales = (int)$_POST["comensales"];
-    $nombre = $_POST["nombre"];
-
-    // Agregar la nueva reserva
-    $reservaciones[] = ["fecha" => $fecha, "area" => $area, "comensales" => $comensales, "nombre" => $nombre];
-}
-
-// Ordenar las reservaciones por fecha
-usort($reservaciones, function ($a, $b) {
-    return strcmp($a["fecha"], $b["fecha"]);
-});
-
-// Calcular acumulados solo si hay reservaciones
-$totalComensales = 0;
-$totalIngresos = 0;
-
-if (!empty($reservaciones)) {
-    foreach ($reservaciones as $reserva) {
-        $fecha = $reserva["fecha"];
-        $area = $reserva["area"];
-        $cantidad = $reserva["comensales"];
-
-        // Acumular comensales por día
-        if (!isset($comensalesPorDia[$fecha])) {
-            $comensalesPorDia[$fecha] = 0;
-        }
-        $comensalesPorDia[$fecha] += $cantidad;
-
-        // Acumular comensales por área y fecha
-        if (!isset($comensalesPorArea[$fecha])) {
-            $comensalesPorArea[$fecha] = [];
-        }
-        if (!isset($comensalesPorArea[$fecha][$area])) {
-            $comensalesPorArea[$fecha][$area] = 0;
-        }
-        $comensalesPorArea[$fecha][$area] += $cantidad;
-
-        // Calcular ingresos por día
-        if (!isset($ingresosPorDia[$fecha])) {
-            $ingresosPorDia[$fecha] = 0;
-        }
-        $ingresosPorDia[$fecha] += $cantidad * $precioPorComensal;
+    // Inicializar contadores si no existen
+    if (!isset($comensalesPorDia[$fecha])) {
+        $comensalesPorDia[$fecha] = 0;
+        $comensalesPorArea[$fecha] = [];
     }
+    if (!isset($comensalesPorArea[$fecha][$area])) {
+        $comensalesPorArea[$fecha][$area] = 0;
+    }
+
+    // Sumar comensales
+    $comensalesPorDia[$fecha] += $reserva['comensales'];
+    $comensalesPorArea[$fecha][$area] += $reserva['comensales'];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Comensales</title>
+    <title>REPORTE DE RESERVAS</title>
     <style>
         body {
             background-image: url('fondo.png'); /* Ruta de la imagen */
@@ -76,7 +76,7 @@ if (!empty($reservaciones)) {
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
+            background-color: rgba(241, 191, 191, 0.7); /* Fondo blanco semitransparente */
         }
         th, td {
             border: 1px solid #ddd;
@@ -85,13 +85,14 @@ if (!empty($reservaciones)) {
         }
         th {
             background-color: #f4f4f4;
+            text-align: center;
         }
         header {
             text-align: center;
             margin-bottom: 20px;
         }
         header img {
-            max-width: 100px;
+            max-width: 200px;
             border: 2px solid black;
         }
     </style>
@@ -100,11 +101,12 @@ if (!empty($reservaciones)) {
     <!-- Encabezado con imagen -->
     <header>
         <img src="logo.png" alt="Logo del Restaurante">
-        <h1>Reporte de Comensales</h1>
+        <h1>REPORTE DE RESERVAS</h1><br>
+
     </header>
 
     <!-- Formulario para agregar reservas -->
-    <h2>Agregar Nueva Reserva</h2>
+    <h2>AGREGAR NUEVA RESERVA</h2>
     <form method="POST">
         <label for="fecha">Fecha:</label>
         <input type="date" id="fecha" name="fecha" required><br><br>
@@ -112,7 +114,8 @@ if (!empty($reservaciones)) {
         <label for="area">Área:</label>
         <select id="area" name="area" required>
             <option value="Terraza">Terraza</option>
-            <option value="Salón">Salón</option>
+            <option value="Salón">Salón VIP</option>
+            <option value="Comedor">Comedor Principal</option>
         </select><br><br>
 
         <label for="comensales">Número de Comensales:</label>
@@ -121,6 +124,9 @@ if (!empty($reservaciones)) {
         <label for="nombre">Nombre del Cliente:</label>
         <input type="text" id="nombre" name="nombre" required><br><br>
 
+        <label for="telefono">Teléfono del Cliente:</label>
+        <input type="text" id="telefono" name="telefono" required><br><br>
+
         <button type="submit">Agregar Reserva</button>
     </form>
 
@@ -128,9 +134,9 @@ if (!empty($reservaciones)) {
     <table>
         <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Área</th>
-                <th>Comensales</th>
+                <th>FECHA</th>
+                <th>ÁREA</th>
+                <th>COMENSALES</th>
             </tr>
         </thead>
         <tbody>
