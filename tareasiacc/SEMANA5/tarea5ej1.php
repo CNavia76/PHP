@@ -79,12 +79,12 @@ foreach ($reservaciones as $reserva) {
             background-color: rgba(241, 191, 191, 0.7); /* Fondo blanco semitransparente */
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid brown;
             padding: 8px;
             text-align: left;
         }
         th {
-            background-color: #f4f4f4;
+            background-color:hsla(0, 95.80%, 81.20%, 0.70);
             text-align: center;
         }
         header {
@@ -143,7 +143,7 @@ foreach ($reservaciones as $reserva) {
             <?php foreach ($comensalesPorDia as $fecha => $totalComensales): ?>
                 <tr>
                     <td rowspan="<?= count($comensalesPorArea[$fecha]) + 1 ?>"><?= $fecha ?></td>
-                    <td colspan="2">Total: <?= $totalComensales ?></td>
+                    <td colspan="2"><strong>TOTAL:</strong> <?= $totalComensales ?></td>
                 </tr>
                 <?php foreach ($comensalesPorArea[$fecha] as $area => $comensalesArea): ?>
                     <tr>
