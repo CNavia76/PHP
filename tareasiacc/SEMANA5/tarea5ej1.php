@@ -2,39 +2,39 @@
 // Array bidimensional asociativo con reservaciones que incluyen el área elegida por el cliente.
 $reservaciones = [
     [
-        'nombre' => 'Juan Perez',
-        'telefono' => '1234567890',
-        'comensales' => 4,
-        'fecha_hora' => '2025-05-01 20:00',
-        'area' => 'Comedor Principal'
+        "nombre" => "Carolina Navia",
+        "telefono" => "1234567890",
+        "comensales" => 4,
+        "fecha_hora" => "2025-05-01 20:00",
+        "area" => "Comedor Principal"
     ],
     [
-        'nombre' => 'Maria Lopez',
-        'telefono' => '0987654321',
-        'comensales' => 2,
-        'fecha_hora' => '2025-05-01 21:00',
-        'area' => 'Terraza'
+        "nombre" => "Maria Lopez",
+        "telefono" => "0987654321",
+        "comensales" => 2,
+        "fecha_hora" => "2025-05-01 21:00",
+        "area" => "Terraza"
     ],
     [
-        'nombre' => 'Carlos Ruiz',
-        'telefono' => '1112223333',
-        'comensales' => 3,
-        'fecha_hora' => '2025-05-02 19:30',
-        'area' => 'Salón VIP'
+        "nombre" => "Carlos Ruiz",
+        "telefono" => "1112223333",
+        "comensales" => 3,
+        "fecha_hora" => "2025-05-02 19:30",
+        "area" => "Salón VIP"
     ],
     [
-        'nombre' => 'Ana Gomez',
-        'telefono' => '4445556666',
-        'comensales' => 5,
-        'fecha_hora' => '2025-05-03 18:00',
-        'area' => 'Comedor Principal'
+        "nombre" => "Ana Gomez",
+        "telefono" => "4445556666",
+        "comensales" => 5,
+        "fecha_hora" => "2025-05-03 18:00",
+        "area" => "Comedor Principal"
     ],
     [
-        'nombre' => 'Luis Martinez',
-        'telefono' => '7778889999',
-        'comensales' => 2,
-        'fecha_hora' => '2025-05-03 20:00',
-        'area' => 'Terraza'
+        "nombre" => "Luis Martinez",
+        "telefono" => "7778889999",
+        "comensales" => 2,
+        "fecha_hora" => "2025-05-03 20:00",
+        "area" => "Terraza"
     ]
 ];
 
@@ -43,8 +43,8 @@ $comensalesPorDia = [];
 $comensalesPorArea = [];
 
 foreach ($reservaciones as $reserva) {
-    $fecha = date('Y-m-d', strtotime($reserva['fecha_hora']));
-    $area = $reserva['area'];
+    $fecha = date("Y-m-d", strtotime($reserva["fecha_hora"]));
+    $area = $reserva["area"];
 
     // Inicializar contadores si no existen
     if (!isset($comensalesPorDia[$fecha])) {
@@ -56,8 +56,8 @@ foreach ($reservaciones as $reserva) {
     }
 
     // Sumar comensales
-    $comensalesPorDia[$fecha] += $reserva['comensales'];
-    $comensalesPorArea[$fecha][$area] += $reserva['comensales'];
+    $comensalesPorDia[$fecha] += $reserva["comensales"];
+    $comensalesPorArea[$fecha][$area] += $reserva["comensales"];
 }
 ?>
 <!DOCTYPE html>
@@ -68,7 +68,7 @@ foreach ($reservaciones as $reserva) {
     <title>REPORTE DE RESERVAS</title>
     <style>
         body {
-            background-image: url('fondo.png'); /* Ruta de la imagen */
+            background-image: url("fondo.png"); /* Ruta de la imagen */
             background-size: cover; /* Ajustar la imagen para cubrir toda la página */
             background-repeat: no-repeat; /* Evitar que la imagen se repita */
             background-attachment: fixed; /* Fijar la imagen al fondo */
