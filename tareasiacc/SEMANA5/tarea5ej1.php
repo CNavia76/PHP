@@ -2,44 +2,44 @@
 
 $reservaciones = [
     [
-        "nombre" => "Carolina Navia",     // Nombre del cliente
-        "telefono" => "1234567890",    // Teléfono del cliente
-        "comensales" => 4,      // Número de comensales
-        "fecha_hora" => "2025-05-01 20:00",    // Fecha y hora de la reserva
+        "nombre" => "Carolina Navia",           // Nombre del cliente
+        "telefono" => "1234567890",             // Teléfono del cliente
+        "comensales" => 4,                      // Número de comensales
+        "fecha_hora" => "2025-05-01 20:00",     // Fecha y hora de la reserva
         "area" => "Comedor Principal",          // Área de la reserva
-        "menu" => "Menú del día",         // Menú seleccionado  
+        "menu" => "Menú del día",               // Menú seleccionado  
     ],
     [
-        "nombre" => "Alejandro Silva",
-        "telefono" => "0987654321",
-        "comensales" => 2,
-        "fecha_hora" => "2025-05-01 21:00",
-        "area" => "Terraza",
-        "menu" => "Menú Especial",
+        "nombre" => "Alejandro Silva",          // Nombre del cliente
+        "telefono" => "0987654321",             // Teléfono del cliente
+        "comensales" => 2,                      // Número de comensales
+        "fecha_hora" => "2025-05-01 21:00",     // Fecha y hora de la reserva
+        "area" => "Terraza",                    // Área de la reserva
+        "menu" => "Menú Vegetariano",           // Menú seleccionado
+     ],
+    [
+        "nombre" => "Belén Pinilla",            // Nombre del cliente
+        "telefono" => "1112223333",             // Teléfono del cliente
+        "comensales" => 3,                      // Número de comensales
+        "fecha_hora" => "2025-05-02 19:30",     // Fecha y hora de la reserva
+        "area" => "Salón VIP",                  // Área de la reserva
+        "menu" => "Menú Vegetariano",           // Menú seleccionado
     ],
     [
-        "nombre" => "Belén Pinilla",
-        "telefono" => "1112223333",
-        "comensales" => 3,
-        "fecha_hora" => "2025-05-02 19:30",
-        "area" => "Salón VIP",
-        "menu" => "Menú Vegetariano",
+        "nombre" => "Catalina Bahamondes",      //Nombre del cliente
+        "telefono" => "4445556666",             // Teléfono del cliente
+        "comensales" => 5,                      // Número de comensales
+        "fecha_hora" => "2025-05-03 18:00",     //Fecha y hora de la reserva
+        "area" => "Comedor Principal",          // Área de la reserva
+        "menu" => "Menú del día",               // Menú seleccionado
     ],
     [
-        "nombre" => "Catalina Bahamondes",
-        "telefono" => "4445556666",
-        "comensales" => 5,
-        "fecha_hora" => "2025-05-03 18:00",
-        "area" => "Comedor Principal",
-        "menu" => "Menú del día",
-    ],
-    [
-        "nombre" => "Riccardo Navia",
-        "telefono" => "7778889999",
-        "comensales" => 2,
-        "fecha_hora" => "2025-05-03 20:00",
-        "area" => "Terraza",
-        "menu" => "Menú Especial",
+        "nombre" => "Riccardo Navia",           // Nombre del cliente
+        "telefono" => "7778889999",             // Teléfono del cliente
+        "comensales" => 2,                      // Número de comensales
+        "fecha_hora" => "2025-05-03 20:00",     // Fecha y hora de la reserva
+        "area" => "Terraza",                    // Área de la reserva
+        "menu" => "Menú Especial",              // Menú seleccionado
     ]
 ];
 
@@ -59,14 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 // Agrupar reservaciones por fecha y área
-$comensalesPorDia = [];
-$comensalesPorArea = [];
+$comensalesPorDia = [];  // Nuevo array para almacenar los comensales por día
+$comensalesPorArea = []; // Nuevo array para almacenar los comensales por área
 $diasDeLaSemana = []; // Nuevo array para almacenar los días de la semana
 
 foreach ($reservaciones as $reserva) {
-    $fecha = date("Y-m-d", strtotime($reserva["fecha_hora"]));
+    $fecha = date(format: "Y-m-d", timestamp: strtotime(datetime: $reserva["fecha_hora"]));
     $area = $reserva["area"];
-    $diaSemana = date("l", strtotime($reserva["fecha_hora"])); // Obtener el día de la semana en inglés
+    $diaSemana = date(format: "l", timestamp: strtotime(datetime: $reserva["fecha_hora"])); // Obtener el día de la semana en inglés
 
     // Traducir el día de la semana al español
     $diasEnEspanol = [
@@ -105,10 +105,14 @@ foreach ($reservaciones as $reserva) {
     <title>REPORTE DE RESERVAS</title>
     <style>
         body {
-            background-image: url("fondo.png"); /* Ruta de la imagen */
-            background-size: cover; /* Ajustar la imagen para cubrir toda la página */
-            background-repeat: no-repeat; /* Evitar que la imagen se repita */
-            background-attachment: fixed; /* Fijar la imagen al fondo */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url("fondo.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
         }
         table {
             width: 100%;
@@ -121,7 +125,7 @@ foreach ($reservaciones as $reserva) {
             text-align: left;
         }
         th {
-            background-color:hsla(0, 95.80%, 81.20%, 0.70);
+            background-color: hsla(0, 95.80%, 81.20%, 0.70);
             text-align: center;
         }
         header {
@@ -177,7 +181,7 @@ foreach ($reservaciones as $reserva) {
         <button type="submit"><strong>Agregar Reserva</strong></button>
     </form>
 
-    <!-- Tabla de reporte -->
+    <!-- Tabla del Reporte -->
     <table>
         <thead>
             <tr>
@@ -190,8 +194,8 @@ foreach ($reservaciones as $reserva) {
         <tbody>
             <?php foreach ($comensalesPorDia as $fecha => $totalComensales): ?>
                 <tr>
-                    <td rowspan="<?= count($comensalesPorArea[$fecha]) + 1 ?>"><?= $fecha ?></td>
-                    <td rowspan="<?= count($comensalesPorArea[$fecha]) + 1 ?>"><?= $diasDeLaSemana[$fecha] ?></td>
+                    <td rowspan="<?= count(value: $comensalesPorArea[$fecha]) + 1 ?>"><?= $fecha ?></td>
+                    <td rowspan="<?= count(value: $comensalesPorArea[$fecha]) + 1 ?>"><?= $diasDeLaSemana[$fecha] ?></td>
                     <td colspan="2"><strong>TOTAL:</strong> <?= $totalComensales ?></td>
                 </tr>
                 <?php foreach ($comensalesPorArea[$fecha] as $area => $comensalesArea): ?>
@@ -203,6 +207,7 @@ foreach ($reservaciones as $reserva) {
             <?php endforeach; ?>
         </tbody>
     </table>
+    <br><br>
 </body>
 </html>
 
