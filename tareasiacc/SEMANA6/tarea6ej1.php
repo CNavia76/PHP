@@ -3,7 +3,7 @@
 $clientes = [
     " juan pérez   ",
     "MARÍA   GONZÁLEZ",
-    " luis  martínez ",
+    " carolIna   naVIa    ",
     " Ana  López ",
     " cARLOS sÁnchez  ",
     "BrUnO   pInIlLa  ",
@@ -12,16 +12,16 @@ $clientes = [
 ];
 
 // Función para procesar los nombres de clientes
-function procesarNombresClientes($listaClientes) {
+function procesarNombresClientes($listaClientes): void {
     foreach ($listaClientes as $nombre) {
         // Eliminar espacios en blanco al inicio y al final
-        $nombre_limpio = trim($nombre);
+        $nombre_limpio = trim(string: $nombre);
 
         // Convertir el nombre a mayúsculas (considerando caracteres UTF-8)
-        $nombre_mayusculas = mb_strtoupper($nombre_limpio, "UTF-8");
+        $nombre_mayusculas = mb_strtoupper(string: $nombre_limpio, encoding: "UTF-8");
 
         // Contar el número de caracteres del nombre limpio
-        $num_caracteres = mb_strlen($nombre_limpio, "UTF-8");
+        $num_caracteres = mb_strlen(string: $nombre_limpio, encoding: "UTF-8");
 
         // Mostrar resultados
         echo "Nombre original: [" . $nombre . "]<br>";
