@@ -33,5 +33,5 @@ function procesarNombresClientes($listaClientes): void {
 }
 
 // Ejecutar función con la lista de clientes
-procesarNombresClientes($clientes);
+procesarNombresClientes(listaClientes: $clientes);
 ?>
