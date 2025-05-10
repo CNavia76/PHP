@@ -15,7 +15,7 @@ if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Aquí se puede agregar código para guardar en base de datos
 
-        echo "Paciente registrado: $nombre $apellido";
+        echo "Paciente Registrado: $nombre $apellido";
     }
 
     // Procesar datos del formulario de acceso administrativo
@@ -61,7 +61,7 @@ if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- Formulario de acceso administrativo -->
 <form method="POST" action="">
     <h3>ACCESO ADMINISTRATIVO</h3>
-    Usuario (máx 10 caracteres, mayúsculas): <input type="text" name="usuario" maxlength="10" pattern="[A-Z]{1,10}" required><br>
-    Clave (mín 8 caracteres, minúsculas): <input type="password" name="clave" minlength="8" pattern="[a-z]{8,}" required><br>
+    <strong>USUARIO</strong><br> (máx 10 caracteres, mayúsculas): <input type="text" name="usuario" maxlength="10" pattern="[A-Z]{1,10}" required><br>
+    <strong>CLAVE</strong><br> (mín 8 caracteres, minúsculas): <input type="password" name="clave" minlength="8" pattern="[a-z]{8,}" required><br>
     <input type="submit" name="login" value="Ingresar">
 </form>
