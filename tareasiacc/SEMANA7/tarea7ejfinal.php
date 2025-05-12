@@ -119,14 +119,14 @@
         // Procesar datos del formulario de pacientes
         if (isset($_POST['registro_paciente'])) {
             // Captura y sanitiza los datos
-            $nombre = htmlspecialchars($_POST['nombre']);
-            $apellido = htmlspecialchars($_POST['apellido']);
-            $identificacion = htmlspecialchars($_POST['identificacion']);
-            $sexo = htmlspecialchars($_POST['sexo']);
-            $direccion = htmlspecialchars($_POST['direccion']);
-            $telefono = htmlspecialchars($_POST['telefono']);
-            $correo = htmlspecialchars($_POST['correo']);
-            $motivo = htmlspecialchars($_POST['motivo']);
+            $nombre = htmlspecialchars(string: $_POST['nombre']);
+            $apellido = htmlspecialchars(string: $_POST['apellido']);
+            $identificacion = htmlspecialchars(string: $_POST['identificacion']);
+            $sexo = htmlspecialchars(string: $_POST['sexo']);
+            $direccion = htmlspecialchars(string: $_POST['direccion']);
+            $telefono = htmlspecialchars(string: $_POST['telefono']);
+            $correo = htmlspecialchars(string: $_POST['correo']);
+            $motivo = htmlspecialchars(string: $_POST['motivo']);
 
             // Aquí se puede agregar código para guardar en base de datos
             echo "<p>Paciente Registrado: $nombre $apellido</p>";
@@ -138,9 +138,9 @@
             $clave = $_POST['clave'];
 
             // Validar usuario: máximo 10 caracteres, mayúsculas
-            if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
+            if (strlen(string: $usuario) <= 10 && strtoupper(string: $usuario) === $usuario) {
                 // Validar clave: mínimo 8 caracteres, minúsculas
-                if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
+                if (strlen(string: $clave) >= 8 && strtolower(string: $clave) === $clave) {
                     // Aquí validar credenciales contra base de datos
                     echo "<p>Acceso concedido a $usuario</p>";
                 } else {
