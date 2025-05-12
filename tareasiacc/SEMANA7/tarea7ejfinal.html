@@ -114,43 +114,9 @@
     </div>
 
     <?php
-    // Procesar datos del formulario
-    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        // Procesar datos del formulario de pacientes
-        if (isset($_POST['registro_paciente'])) {
-            // Captura y sanitiza los datos
-            $nombre = htmlspecialchars($_POST['nombre']);
-            $apellido = htmlspecialchars($_POST['apellido']);
-            $identificacion = htmlspecialchars($_POST['identificacion']);
-            $sexo = htmlspecialchars($_POST['sexo']);
-            $direccion = htmlspecialchars($_POST['direccion']);
-            $telefono = htmlspecialchars($_POST['telefono']);
-            $correo = htmlspecialchars($_POST['correo']);
-            $motivo = htmlspecialchars($_POST['motivo']);
-
-            // Aquí se puede agregar código para guardar en base de datos
-            echo "<p>Paciente Registrado: $nombre $apellido</p>";
-        }
-
-        // Procesar datos del formulario de acceso administrativo
-        if (isset($_POST['login'])) {
-            $usuario = $_POST['usuario'];
-            $clave = $_POST['clave'];
-
-            // Validar usuario: máximo 10 caracteres, mayúsculas
-            if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
-                // Validar clave: mínimo 8 caracteres, minúsculas
-                if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
-                    // Aquí validar credenciales contra base de datos
-                    echo "<p>Acceso concedido a $usuario</p>";
-                } else {
-                    echo "<p>Clave inválida: debe tener mínimo 8 caracteres y estar en minúsculas.</p>";
-                }
-            } else {
-                echo "<p>Usuario inválido: máximo 10 caracteres y en mayúsculas.</p>";
-            }
-        }
-    }
+    // Incluir el archivo PHP con la lógica
+    
+    require_once 'tarea7ejbase.php';
     ?>
 </body>
 </html>
