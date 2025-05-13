@@ -1,0 +1,9 @@
+Una definición de clase básica comienza con la palabra clave class, seguida del nombre de la clase. 
+Sigue un par de llaves que contienen la definición de las propiedades y los métodos que pertenecen a la clase.
+
+El nombre de la clase puede ser cualquiera siempre que no sea una palabra reservada en PHP. 
+A partir de PHP 8.4.0, el uso de un solo guion bajo _ como nombre de clase es obsoleto. 
+Un nombre de clase válido comienza con una letra o un guion bajo, seguido de cualquier número de letras, dígitos o guiones bajos. 
+En términos de expresión regular, esto se expresaría así: ^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$.
+
+Una clase puede contener sus propias constantes, variables (llamadas "propiedades" o "atributos"), y funciones (llamadas "métodos").
