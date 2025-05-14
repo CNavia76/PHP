@@ -101,7 +101,7 @@
             <strong>TELÉFONO: </strong><input type="tel" name="telefono" required><br>
             <strong>CORREO: </strong><input type="email" name="correo" required><br>
             <strong>MOTIVO DE CONSULTA: </strong><textarea name="motivo" required></textarea><br>
-            <input type="submit" name="registro_paciente" >
+            <input type="submit" name="registro_paciente" value="Registrar Paciente"><br>
         </form>
 
         <!-- Formulario de acceso administrativo -->
