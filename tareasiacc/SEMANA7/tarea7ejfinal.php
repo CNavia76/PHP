@@ -1,3 +1,23 @@
+<?php
+// Conexión a la base de datos databasetrauma para pacientes
+$host = "localhost";
+$user = "root";
+$password = ""; // Cambia si tienes contraseña
+$database_pacientes = "databasetrauma";
+
+// Conexión para pacientes
+$conexion = new mysqli($host, $user, $password, $database_pacientes);
+
+// Verificar conexión de pacientes
+if ($conexion->connect_error) {
+    die("Error de conexión (pacientes): " . $conexion->connect_error);
+}
+
+// Variables para mensajes
+$mensaje_exito = "";
+$mensaje_admin = "";
+$color_admin = "green";
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -76,6 +96,9 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        .mensaje-verde { color: green; font-weight: bold; margin-bottom: 10px; }
+        .mensaje-rojo { color: red; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -84,10 +107,88 @@
         <h3>Gestión de Pacientes y Acceso Administrativo</h3>
     </header>
 
+    <?php
+    // Procesar datos del formulario
+    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+        // Procesar datos del formulario de pacientes
+        if (isset($_POST['registro_paciente'])) {
+            // Captura y sanitiza los datos
+            $nombre = htmlspecialchars($_POST['nombre']);
+            $apellido = htmlspecialchars($_POST['apellido']);
+            $identificacion = htmlspecialchars($_POST['identificacion']);
+            $sexo = htmlspecialchars($_POST['sexo']);
+            $direccion = htmlspecialchars($_POST['direccion']);
+            $telefono = htmlspecialchars($_POST['telefono']);
+            $correo = htmlspecialchars($_POST['correo']);
+            $motivo = htmlspecialchars($_POST['motivo']);
+
+            // Insertar en la base de datos de pacientes
+            $stmt = $conexion->prepare("INSERT INTO pacientes (nombre, apellido, identificacion, sexo, direccion, telefono, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $nombre, $apellido, $identificacion, $sexo, $direccion, $telefono, $correo, $motivo);
+
+            if ($stmt->execute()) {
+                $mensaje_exito = "Paciente ingresado con éxito";
+            } else {
+                $mensaje_exito = "Error al registrar paciente: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+
+        // Procesar datos del formulario de acceso administrativo
+        if (isset($_POST['login'])) {
+            // Conexión a la base de datos admin_clinica para usuarios
+            $database_admin = "admin_clinica";
+            $conexion_admin = new mysqli($host, $user, $password, $database_admin);
+
+            if ($conexion_admin->connect_error) {
+                $mensaje_admin = "Error de conexión (admin): " . $conexion_admin->connect_error;
+                $color_admin = "mensaje-rojo";
+            } else {
+                $usuario = $_POST['usuario'];
+                $clave = $_POST['clave'];
+
+                // Validar usuario: máximo 10 caracteres, mayúsculas
+                if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
+                    // Validar clave: mínimo 8 caracteres, minúsculas
+                    if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
+                        // Validar credenciales en la base de datos admin_clinica
+                        $stmt = $conexion_admin->prepare("SELECT * FROM usuarios WHERE usuario = ? AND clave = ?");
+                        $stmt->bind_param("ss", $usuario, $clave);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        if ($result->num_rows > 0) {
+                            $mensaje_admin = "Acceso concedido a $usuario";
+                            $color_admin = "mensaje-verde";
+                        } else {
+                            $mensaje_admin = "Usuario o clave incorrectos.";
+                            $color_admin = "mensaje-rojo";
+                        }
+                        $stmt->close();
+                    } else {
+                        $mensaje_admin = "Clave inválida: debe tener mínimo 8 caracteres y estar en minúsculas.";
+                        $color_admin = "mensaje-rojo";
+                    }
+                } else {
+                    $mensaje_admin = "Usuario inválido: máximo 10 caracteres y en mayúsculas.";
+                    $color_admin = "mensaje-rojo";
+                }
+                $conexion_admin->close();
+            }
+        }
+    }
+    // Cerrar conexión de pacientes
+    $conexion->close();
+    ?>
+
     <div class="form-container">
         <!-- Formulario de registro de pacientes -->
         <form method="POST" action="">
             <h2>REGISTRO DE PACIENTES</h2>
+            <?php if (!empty($mensaje_exito)) { ?>
+                <div class="mensaje-verde">
+                    <?php echo $mensaje_exito; ?>
+                </div>
+            <?php } ?>
             <strong>NOMBRE: </strong><input type="text" name="nombre" required><br>
             <strong>APELLIDO: </strong><input type="text" name="apellido" required><br>
             <strong>IDENTIFICACIÓN: </strong><input type="text" name="identificacion" required><br>
@@ -107,50 +208,15 @@
         <!-- Formulario de acceso administrativo -->
         <form method="POST" action="">
             <h2>ACCESO ADMINISTRATIVO</h2>
-             <strong>USUARIO</strong><br> (máx 10 caracteres, mayúsculas): <input type="text" name="usuario" maxlength="10" pattern="[A-Z]{1,10}" required><br>
+            <?php if (!empty($mensaje_admin)) { ?>
+                <div class="<?php echo $color_admin; ?>">
+                    <?php echo $mensaje_admin; ?>
+                </div>
+            <?php } ?>
+            <strong>USUARIO</strong><br> (máx 10 caracteres, mayúsculas): <input type="text" name="usuario" maxlength="10" pattern="[A-Z]{1,10}" required><br>
             <strong>CLAVE</strong><br> (mín 8 caracteres, minúsculas): <input type="password" name="clave" minlength="8" pattern="[a-z]{8,}" required><br>
             <input type="submit" name="login" value="Ingresar">
         </form>
     </div>
-
-    <?php
-    // Procesar datos del formulario
-    if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
-        // Procesar datos del formulario de pacientes
-        if (isset($_POST['registro_paciente'])) {
-            // Captura y sanitiza los datos
-            $nombre = htmlspecialchars(string: $_POST['nombre']);
-            $apellido = htmlspecialchars(string: $_POST['apellido']);
-            $identificacion = htmlspecialchars(string: $_POST['identificacion']);
-            $sexo = htmlspecialchars(string: $_POST['sexo']);
-            $direccion = htmlspecialchars(string: $_POST['direccion']);
-            $telefono = htmlspecialchars(string: $_POST['telefono']);
-            $correo = htmlspecialchars(string: $_POST['correo']);
-            $motivo = htmlspecialchars(string: $_POST['motivo']);
-
-            // Aquí se puede agregar código para guardar en base de datos
-            echo "<p>Paciente Registrado: $nombre $apellido</p>";
-        }
-
-        // Procesar datos del formulario de acceso administrativo
-        if (isset($_POST['login'])) {
-            $usuario = $_POST['usuario'];
-            $clave = $_POST['clave'];
-
-            // Validar usuario: máximo 10 caracteres, mayúsculas
-            if (strlen(string: $usuario) <= 10 && strtoupper(string: $usuario) === $usuario) {
-                // Validar clave: mínimo 8 caracteres, minúsculas
-                if (strlen(string: $clave) >= 8 && strtolower(string: $clave) === $clave) {
-                    // Aquí validar credenciales contra base de datos
-                    echo "<p>Acceso concedido a $usuario</p>";
-                } else {
-                    echo "<p>Clave inválida: debe tener mínimo 8 caracteres y estar en minúsculas.</p>";
-                }
-            } else {
-                echo "<p>Usuario inválido: máximo 10 caracteres y en mayúsculas.</p>";
-            }
-        }
-    }
-    ?>
 </body>
 </html>
