@@ -18,6 +18,70 @@ if ($conexion->connect_error) {
 $mensaje_exito = "";
 $mensaje_admin = "";
 $color_admin = "success"; // Bootstrap usa 'success' para verde y 'danger' para rojo
+
+// Procesar datos del formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Procesar datos del formulario de pacientes
+    if (isset($_POST['registro_paciente'])) {
+        $nombre = htmlspecialchars($_POST['nombre']);
+        $apellido = htmlspecialchars($_POST['apellido']);
+        $identificacion = htmlspecialchars($_POST['identificacion']);
+        $sexo = htmlspecialchars($_POST['sexo']);
+        $direccion = htmlspecialchars($_POST['direccion']);
+        $telefono = htmlspecialchars($_POST['telefono']);
+        $correo = htmlspecialchars($_POST['correo']);
+        $motivo = htmlspecialchars($_POST['motivo']);
+
+        $stmt = $conexion->prepare("INSERT INTO pacientes (nombre, apellido, identificacion, sexo, direccion, telefono, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $nombre, $apellido, $identificacion, $sexo, $direccion, $telefono, $correo, $motivo);
+
+        if ($stmt->execute()) {
+            $mensaje_exito = "Paciente ingresado con éxito";
+        } else {
+            $mensaje_exito = "Error al registrar paciente" . $stmt->error;
+        }
+        $stmt->close();
+    }
+
+    // Procesar datos del formulario de acceso administrativo
+    if (isset($_POST['login'])) {
+        $database_admin = "admin_clinica";
+        $conexion_admin = new mysqli($host, $user, $password, $database_admin);
+
+        if ($conexion_admin->connect_error) {
+            $mensaje_admin = "Error de conexión (admin): " . $conexion_admin->connect_error;
+            $color_admin = "danger";
+        } else {
+            $usuario = $_POST['usuario'];
+            $clave = $_POST['clave'];
+
+            if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
+                if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
+                    $stmt = $conexion_admin->prepare("SELECT * FROM usuarios WHERE usuario = ? AND clave = ?");
+                    $stmt->bind_param("ss", $usuario, $clave);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows > 0) {
+                        $mensaje_admin = "Acceso concedido a $usuario";
+                        $color_admin = "success";
+                    } else {
+                        $mensaje_admin = "Usuario o clave incorrectos.";
+                        $color_admin = "danger";
+                    }
+                    $stmt->close();
+                } else {
+                    $mensaje_admin = "Clave inválida: debe tener mínimo 8 caracteres y estar en minúsculas.";
+                    $color_admin = "danger";
+                }
+            } else {
+                $mensaje_admin = "Usuario inválido: máximo 10 caracteres y en mayúsculas.";
+                $color_admin = "danger";
+            }
+            $conexion_admin->close();
+        }
+    }
+}
+$conexion->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -27,11 +91,19 @@ $color_admin = "success"; // Bootstrap usa 'success' para verde y 'danger' para 
     <title>CLÍNICA TRAUMATOLÓGICA "EL BIENESTAR"</title>
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('traumatologia-1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
 <body class="bg-light">
-    <header class="bg-info bg-opacity-25 py-4 mb-4">
+    <header class="bg-info py-4 mb-4" style="background-color: rgba(13,202,240,0.3) !important;">
         <div class="container text-center">
-            <h1 class="display-4 text-primary">CLÍNICA TRAUMATOLÓGICA "EL BIENESTAR"</h1>
+            <h1 class="display-4" style="color: hsla(209, 67.10%, 85.70%, 0.80);">CLÍNICA TRAUMATOLÓGICA "EL BIENESTAR"</h1>
             <h3 class="text-secondary">Gestión de Pacientes y Acceso Administrativo</h3>
         </div>
     </header>
@@ -46,7 +118,7 @@ $color_admin = "success"; // Bootstrap usa 'success' para verde y 'danger' para 
                     </div>
                     <div class="card-body">
                         <?php if (!empty($mensaje_exito)) { ?>
-                            <div class="alert alert-success" role="alert">
+                            <div class="alert alert-<?php echo ($mensaje_exito == "Paciente ingresado con éxito") ? 'success' : 'danger'; ?>" role="alert">
                                 <?php echo $mensaje_exito; ?>
                             </div>
                         <?php } ?>
@@ -121,71 +193,6 @@ $color_admin = "success"; // Bootstrap usa 'success' para verde y 'danger' para 
         </div>
     </div>
 
-<?php
-// Procesar datos del formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Procesar datos del formulario de pacientes
-    if (isset($_POST['registro_paciente'])) {
-        $nombre = htmlspecialchars($_POST['nombre']);
-        $apellido = htmlspecialchars($_POST['apellido']);
-        $identificacion = htmlspecialchars($_POST['identificacion']);
-        $sexo = htmlspecialchars($_POST['sexo']);
-        $direccion = htmlspecialchars($_POST['direccion']);
-        $telefono = htmlspecialchars($_POST['telefono']);
-        $correo = htmlspecialchars($_POST['correo']);
-        $motivo = htmlspecialchars($_POST['motivo']);
-
-        $stmt = $conexion->prepare("INSERT INTO pacientes (nombre, apellido, identificacion, sexo, direccion, telefono, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $nombre, $apellido, $identificacion, $sexo, $direccion, $telefono, $correo, $motivo);
-
-        if ($stmt->execute()) {
-            $mensaje_exito = "Paciente ingresado con éxito";
-        } else {
-            $mensaje_exito = "Error al registrar paciente: " . $stmt->error;
-        }
-        $stmt->close();
-    }
-
-    // Procesar datos del formulario de acceso administrativo
-    if (isset($_POST['login'])) {
-        $database_admin = "admin_clinica";
-        $conexion_admin = new mysqli($host, $user, $password, $database_admin);
-
-        if ($conexion_admin->connect_error) {
-            $mensaje_admin = "Error de conexión (admin): " . $conexion_admin->connect_error;
-            $color_admin = "danger";
-        } else {
-            $usuario = $_POST['usuario'];
-            $clave = $_POST['clave'];
-
-            if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
-                if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
-                    $stmt = $conexion_admin->prepare("SELECT * FROM usuarios WHERE usuario = ? AND clave = ?");
-                    $stmt->bind_param("ss", $usuario, $clave);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    if ($result->num_rows > 0) {
-                        $mensaje_admin = "Acceso concedido a $usuario";
-                        $color_admin = "success";
-                    } else {
-                        $mensaje_admin = "Usuario o clave incorrectos.";
-                        $color_admin = "danger";
-                    }
-                    $stmt->close();
-                } else {
-                    $mensaje_admin = "Clave inválida: debe tener mínimo 8 caracteres y estar en minúsculas.";
-                    $color_admin = "danger";
-                }
-            } else {
-                $mensaje_admin = "Usuario inválido: máximo 10 caracteres y en mayúsculas.";
-                $color_admin = "danger";
-            }
-            $conexion_admin->close();
-        }
-    }
-}
-$conexion->close();
-?>
 <!-- Bootstrap JS (opcional) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
