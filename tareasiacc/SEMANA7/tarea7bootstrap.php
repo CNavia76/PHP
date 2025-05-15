@@ -21,6 +21,7 @@ $color_admin = "success"; // Bootstrap usa 'success' para verde y 'danger' para 
 
 // Procesar datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     // Procesar datos del formulario de pacientes
     if (isset($_POST['registro_paciente'])) {
         $nombre = htmlspecialchars($_POST['nombre']);
