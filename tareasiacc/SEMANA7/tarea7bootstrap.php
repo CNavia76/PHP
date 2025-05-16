@@ -46,8 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Procesar datos del formulario de acceso administrativo
     if (isset($_POST['login'])) {
-        $database_admin = "admin_clinica";
-        $conexion_admin = new mysqli($host, $user, $password, $database_admin);
+        // Cambiar conexión a la base de datos databasetrauma y tabla usuarios_clinica
+        $conexion_admin = new mysqli($host, $user, $password, $database_pacientes);
 
         if ($conexion_admin->connect_error) {
             $mensaje_admin = "Error de conexión (admin): " . $conexion_admin->connect_error;
@@ -58,7 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
                 if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
-                    $stmt = $conexion_admin->prepare("SELECT * FROM usuarios WHERE usuario = ? AND clave = ?");
+                    // Cambiar consulta a la tabla usuarios_clinica
+                    $stmt = $conexion_admin->prepare("SELECT * FROM usuarios_clinica WHERE usuario = ? AND clave = ?");
                     $stmt->bind_param("ss", $usuario, $clave);
                     $stmt->execute();
                     $result = $stmt->get_result();
