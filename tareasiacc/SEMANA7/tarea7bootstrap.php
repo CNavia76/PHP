@@ -1,5 +1,10 @@
 <?php
 
+// Función para limpiar entradas y evitar inyección y errores
+function limpiar_dato($dato) {
+    return htmlspecialchars(trim($dato), ENT_QUOTES, 'UTF-8');
+}
+
 // Conexión a la base de datos databasetrauma para pacientes
 $host = "localhost";
 $user = "root";
@@ -24,14 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Procesar datos del formulario de pacientes
     if (isset($_POST['registro_paciente'])) {
-        $nombre = htmlspecialchars($_POST['nombre']);
-        $apellido = htmlspecialchars($_POST['apellido']);
-        $identificacion = htmlspecialchars($_POST['identificacion']);
-        $sexo = htmlspecialchars($_POST['sexo']);
-        $direccion = htmlspecialchars($_POST['direccion']);
-        $telefono = htmlspecialchars($_POST['telefono']);
-        $correo = htmlspecialchars($_POST['correo']);
-        $motivo = htmlspecialchars($_POST['motivo']);
+        $nombre = limpiar_dato($_POST['nombre']);
+        $apellido = limpiar_dato($_POST['apellido']);
+        $identificacion = limpiar_dato($_POST['identificacion']);
+        $sexo = limpiar_dato($_POST['sexo']);
+        $direccion = limpiar_dato($_POST['direccion']);
+        $telefono = limpiar_dato($_POST['telefono']);
+        $correo = limpiar_dato($_POST['correo']);
+        $motivo = limpiar_dato($_POST['motivo']);
 
         $stmt = $conexion->prepare("INSERT INTO pacientes (nombre, apellido, identificacion, sexo, direccion, telefono, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssss", $nombre, $apellido, $identificacion, $sexo, $direccion, $telefono, $correo, $motivo);
@@ -53,8 +58,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mensaje_admin = "Error de conexión (admin): " . $conexion_admin->connect_error;
             $color_admin = "danger";
         } else {
-            $usuario = $_POST['usuario'];
-            $clave = $_POST['clave'];
+            $usuario = limpiar_dato($_POST['usuario']);
+            $clave = limpiar_dato($_POST['clave']);
 
             if (strlen($usuario) <= 10 && strtoupper($usuario) === $usuario) {
                 if (strlen($clave) >= 8 && strtolower($clave) === $clave) {
