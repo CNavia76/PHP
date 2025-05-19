@@ -11,18 +11,14 @@ class UserModel {
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)";
         $stmt = $this->conexion->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Error en la preparación de la consulta: " . $this->conexion->error);
+        }
         $stmt->bind_param('sss', $username, $hash, $rol);
-        return $stmt->execute();
-    }
-
-    // Buscar usuario por username
-    public function obtenerUsuarioPorUsername($username) {
-        $sql = "SELECT * FROM usuarios WHERE username = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param('s', $username);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        return $resultado->fetch_assoc();
+        $resultado = $stmt->execute();
+        $stmt->close();
+        return $resultado;
+        // Removed redundant code
     }
 }
 ?>

@@ -46,13 +46,39 @@ class AuthController {
 
     // Verifica si usuario está autenticado
     public function estaAutenticado() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         return isset($_SESSION['user_id']);
     }
 
     // Cerrar sesión
     public function logout() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         session_unset();
         session_destroy();
     }
+}
+
+// (Assuming your UserModel class looks like this)
+class UserModel {
+    private $conexion;
+
+    public function __construct($conexion) {
+        $this->conexion = $conexion;
+    }
+
+    // Busca un usuario por su nombre de usuario
+    public function obtenerUsuarioPorUsername($username) {
+        $stmt = $this->conexion->prepare("SELECT * FROM usuarios WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        return $resultado->fetch_assoc();
+    }
+
+    // Other methods...
 }
 ?>
