@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Carga automática simple
 spl_autoload_register(function ($class) {
     $paths = ['config/', 'model/', 'controller/', 'lib/'];
@@ -11,13 +12,16 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Función para validar el token CSRF
+function validarTokenCSRF($token) {
+    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+}
+
 $db = new Database();
 $conexion = $db->getConexion();
 
 $auth = new AuthController($conexion);
-$controller = new AsistenciaController($conexion);
-
-session_start();
+$asistenciaController = new AsistenciaController($conexion);
 
 $action = $_GET['action'] ?? 'login';
 
@@ -58,7 +62,6 @@ switch ($action) {
         $auth->logout();
         header('Location: index.php?action=login');
         exit;
-        break;
 
     case 'dashboard':
         if (!$auth->estaAutenticado()) {
@@ -80,15 +83,15 @@ switch ($action) {
         // Aquí va el código anterior para manejo de asistencia
         switch ($action) {
             case 'registro':
-                require __DIR__ . '/view/registro.php';
+                require __DIR__ . '/view/registro_asistencia.php';
                 break;
 
             case 'agregar':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Validar y sanitizar entradas
                     $idEmpleado = filter_input(INPUT_POST, 'idEmpleado', FILTER_VALIDATE_INT);
-                    $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_STRING);
-                    $apellido = filter_input(INPUT_POST, 'apellido', FILTER_SANITIZE_STRING);
+                    $nombre = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $apellido = filter_input(INPUT_POST, 'apellido', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                     $entrada = $_POST['entrada'];
                     $salida = $_POST['salida'];
 
@@ -101,7 +104,7 @@ switch ($action) {
                     $entrada = date('Y-m-d H:i:s', strtotime($entrada));
                     $salida = date('Y-m-d H:i:s', strtotime($salida));
 
-                    $success = $controller->agregar($idEmpleado, $nombre, $apellido, $entrada, $salida);
+                    $success = $asistenciaController->agregar($idEmpleado, $nombre, $apellido, $entrada, $salida);
                     if ($success) {
                         header('Location: index.php?action=listar');
                         exit;
@@ -112,18 +115,17 @@ switch ($action) {
                 break;
 
             case 'listar':
-                $registros = $controller->listar();
+                $registros = $asistenciaController->listar();
                 require __DIR__ . '/view/lista_asistencia.php';
                 break;
 
             case 'eliminar':
                 if (isset($_GET['id'])) {
                     $id = intval($_GET['id']);
-                    $controller->eliminar($id);
+                    $asistenciaController->eliminar($id);
                 }
                 header('Location: index.php?action=listar');
                 exit;
-                break;
         }
         break;
 

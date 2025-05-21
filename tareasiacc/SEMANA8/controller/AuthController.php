@@ -81,4 +81,5 @@ class UserModel {
 
     // Other methods...
 }
+
 ?>

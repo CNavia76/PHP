@@ -8,7 +8,7 @@ class UserModel {
 
     // Registrar nuevo usuario con contraseña hasheada
     public function registrarUsuario($username, $password, $rol = 'empleado') {
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $hash = password_hash($password, algo: PASSWORD_DEFAULT);
         $sql = "INSERT INTO usuarios (username, password, rol) VALUES (?, ?, ?)";
         $stmt = $this->conexion->prepare($sql);
         if (!$stmt) {
